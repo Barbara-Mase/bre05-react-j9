@@ -1,39 +1,35 @@
 import './App.css'
+import { useReducer, useEffect } from 'react';
+import recipesReducer from './Reducer.jsx';
+import RecipesList from './RecipesList.jsx'
 
 function App() {
-  
-  const [state, dispatch] = useReducer(recipesReducer, {recipes: [], showDetail: false, loading: false})
-  
-  useEffect(() = (props) => { 
-    
+  const [state, dispatch] = useReducer(recipesReducer, { recipes: [], loading: false });
+
+  useEffect(() => {
     const fetchRecipes = async () => {
-      dispatch({type: 'INIT'});
-      let response = await fetch('https://dummyjson.com/recipes?limit=9');
+      dispatch({ type: 'INIT' });
+
+      const response = await fetch('https://dummyjson.com/recipes?limit=9');
       const result = await response.json();
-      dispatch({type: 'LOADED', payload: result.recipes})
+
+      dispatch({ type: 'LOADED', payload: result.recipes });
     };
-    
+
     fetchRecipes();
   }, []);
-  
-  function showDetail() {
-    dispatch({type: 'SHOWDETAIL'})
-  }
-  
-    if(state.loading) {
-      return (
-        <p>Chargement...</p>
-        )
-    } else if (!state.loading) {
-      return (
-        <Recipes />
-        )
-    } else if (showDetail)
-    {
+
+  if (state.loading === true) {
     return (
-      <RecipeDetail />
+        <>
+          <p>Chargement...</p>
+        </>
+    );
+  } else {
+    return ( <RecipesList recipes={state.recipes} />
     )
-  }
+      }
+}
 
 export default App
 
