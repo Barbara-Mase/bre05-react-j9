@@ -2,6 +2,7 @@ import './App.css'
 import { useReducer, useEffect } from 'react';
 import recipesReducer from './Reducer.jsx';
 import RecipesList from './RecipesList.jsx'
+import RecipeDetail from './RecipeDetail.jsx'
 
 function App() {
   const [state, dispatch] = useReducer(recipesReducer, { recipes: [], loading: false });
@@ -25,10 +26,19 @@ function App() {
           <p>Chargement...</p>
         </>
     );
+  } else if (state.selectedRecipe) {
+    return (
+    <RecipeDetail
+      recipe={state.selectedRecipe}
+      back={() => dispatch({type: "BACK_TO_LIST"})}/>
+  );
+  
   } else {
-    return ( <RecipesList recipes={state.recipes} />
-    )
-      }
+    return ( 
+    <RecipesList recipes={state.recipes} 
+    selectRecipe={(recipe) => dispatch({ type: 'DETAIL', payload: recipe })}/>
+    );
+    }
 }
 
 export default App
